@@ -868,6 +868,13 @@
 #define SEND_DAIKIN200      _IR_ENABLE_DEFAULT_
 #endif  // SEND_DAIKIN200
 
+#ifndef DECODE_TCLXIAOMI
+#define DECODE_TCLXIAOMI    _IR_ENABLE_DEFAULT_
+#endif  // DECODE_TCLXIAOMI
+#ifndef SEND_TCLXIAOMI
+#define SEND_TCLXIAOMI      _IR_ENABLE_DEFAULT_
+#endif  // SEND_TCLXIAOMI
+
 #if (DECODE_ARGO || DECODE_DAIKIN || DECODE_FUJITSU_AC || DECODE_GREE || \
      DECODE_KELVINATOR || DECODE_MITSUBISHI_AC || DECODE_TOSHIBA_AC || \
      DECODE_TROTEC || DECODE_HAIER_AC || DECODE_HITACHI_AC || \
@@ -884,7 +891,7 @@
      DECODE_TEKNOPOINT || DECODE_KELON || DECODE_TROTEC_3550 || \
      DECODE_SANYO_AC88 || DECODE_RHOSS || DECODE_HITACHI_AC264 || \
      DECODE_KELON168 || DECODE_HITACHI_AC296 || \
-     DECODE_DAIKIN200 || \
+     DECODE_DAIKIN200 || DECODE_TCLXIAOMI ||\
      false)
   // Add any DECODE to the above if it uses result->state (see kStateSizeMax)
   // you might also want to add the protocol to hasACState function
@@ -1039,8 +1046,9 @@ enum decode_type_t {
   KELON168,
   HITACHI_AC296,
   DAIKIN200,
+  TCLXIAOMI,
   // Add new entries before this one, and update it to point to the last entry.
-  kLastDecodeType = DAIKIN200,
+  kLastDecodeType = TCLXIAOMI,
 };
 
 // Message lengths & required repeat values
@@ -1299,6 +1307,7 @@ const uint16_t kBoseBits = 16;
 const uint16_t kRhossStateLength = 12;
 const uint16_t kRhossBits = kRhossStateLength * 8;
 const uint16_t kRhossDefaultRepeat = 0;
+const uint16_t kTclXiaomiBits = 27; 
 
 
 // Legacy defines. (Deprecated)

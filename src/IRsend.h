@@ -795,7 +795,11 @@ class IRsend {
 #if SEND_AIRTON
   void sendAirton(const uint64_t data, const uint16_t nbits = kAirtonBits,
                   const uint16_t repeat = kAirtonDefaultRepeat);
-#endif  // SEND_AIRTON
+#endif  // SEND_TCLXIAOMI
+#if SEND_TCLXIAOMI
+  void sendTclXiaomi(const uint64_t data, const uint16_t nbits = kTclXiaomiBits,
+                  const uint16_t repeat = kNoRepeat);
+#endif  // SEND_TCLXIAOMI
 
  protected:
 #ifdef UNIT_TEST

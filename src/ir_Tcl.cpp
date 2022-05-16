@@ -17,6 +17,16 @@
 
 const uint8_t kTcl112AcTimerResolution = 20;  // Minutes
 const uint16_t kTcl112AcTimerMax = 720;  // Minutes (12 hrs)
+// Support for TclXiaomi protocol
+const uint16_t kTclXiaomiHdrMark = 1056;
+const uint16_t kTclXiaomiBitMark = 629;
+const uint16_t kTclXiaomiHdrSpace = 841;
+const uint16_t kTclXiaomiOneSpace = 550;
+const uint16_t kTclXiaomiZeroSpace = 325;
+const uint16_t kTclXiaomiSpaceGap1 = 2179;
+const uint16_t kTclXiaomiSpaceGap2 = 1446;
+const uint16_t kTclXiaomiFreq = 38000;  // Hz. (Guessing the most common frequency.)
+const uint16_t kTclXiaomiOverhead = 45;
 
 using irutils::addBoolToString;
 using irutils::addFanToString;
@@ -43,6 +53,532 @@ void IRsend::sendTcl112Ac(const unsigned char data[], const uint16_t nbytes,
               data, nbytes, 38000, false, repeat, 50);
 }
 #endif  // SEND_TCL112AC
+
+#if SEND_TCLXIAOMI
+// Function should be safe up to 64 bits.
+/// Send a TclXiaomi formatted message.
+/// Status: ALPHA / Untested.
+/// @param[in] data containing the IR command.
+/// @param[in] nbits Nr. of bits to send. usually kTclXiaomiBits
+/// @param[in] repeat Nr. of times the message is to be repeated.
+void IRsend::sendTclXiaomi(const uint64_t data, const uint16_t nbits, const uint16_t repeat) {
+  enableIROut(kTclXiaomiFreq);
+  for (uint16_t r = 0; r <= repeat; r++) {
+    uint64_t send_data = data;
+    // Header
+    mark(kTclXiaomiHdrMark);
+    // Data Section #1
+    // e.g. data = 0x1, nbits = 1
+    sendData(kTclXiaomiBitMark, kTclXiaomiOneSpace, kTclXiaomiBitMark, kTclXiaomiZeroSpace, send_data, 1, true);
+    send_data >>= 1;
+    // Footer
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiSpaceGap);
+    // Gap
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiSpaceGap);
+    space(kTclXiaomiHdrSpace);
+    // Gap
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiSpaceGap);
+    // Data Section #2
+    // e.g. data = 0x0, nbits = 1
+    sendData(kTclXiaomiBitMark, kTclXiaomiOneSpace, kTclXiaomiBitMark, kTclXiaomiZeroSpace, send_data, 1, true);
+    send_data >>= 1;
+    // Footer
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiHdrSpace);
+    // Gap
+    space(kTclXiaomiSpaceGap);
+    // Data Section #3
+    // e.g. data = 0x0, nbits = 1
+    sendData(kTclXiaomiBitMark, kTclXiaomiOneSpace, kTclXiaomiBitMark, kTclXiaomiZeroSpace, send_data, 1, true);
+    send_data >>= 1;
+    // Footer
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiHdrSpace);
+    // Gap
+    space(kTclXiaomiSpaceGap);
+    // Data Section #4
+    // e.g. data = 0x0, nbits = 1
+    sendData(kTclXiaomiBitMark, kTclXiaomiOneSpace, kTclXiaomiBitMark, kTclXiaomiZeroSpace, send_data, 1, true);
+    send_data >>= 1;
+    // Footer
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiHdrSpace);
+    // Data Section #5
+    // e.g. data = 0x0, nbits = 1
+    sendData(kTclXiaomiBitMark, kTclXiaomiOneSpace, kTclXiaomiBitMark, kTclXiaomiZeroSpace, send_data, 1, true);
+    send_data >>= 1;
+    // Footer
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiHdrSpace);
+    // Data Section #6
+    // e.g. data = 0x0, nbits = 1
+    sendData(kTclXiaomiBitMark, kTclXiaomiOneSpace, kTclXiaomiBitMark, kTclXiaomiZeroSpace, send_data, 1, true);
+    send_data >>= 1;
+    // Footer
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiHdrSpace);
+    // Data Section #7
+    // e.g. data = 0x0, nbits = 1
+    sendData(kTclXiaomiBitMark, kTclXiaomiOneSpace, kTclXiaomiBitMark, kTclXiaomiZeroSpace, send_data, 1, true);
+    send_data >>= 1;
+    // Footer
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiHdrSpace);
+    // Data Section #8
+    // e.g. data = 0x0, nbits = 1
+    sendData(kTclXiaomiBitMark, kTclXiaomiOneSpace, kTclXiaomiBitMark, kTclXiaomiZeroSpace, send_data, 1, true);
+    send_data >>= 1;
+    // Footer
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiHdrSpace);
+    space(kTclXiaomiHdrSpace);
+    // Data Section #9
+    // e.g. data = 0x0, nbits = 1
+    sendData(kTclXiaomiBitMark, kTclXiaomiOneSpace, kTclXiaomiBitMark, kTclXiaomiZeroSpace, send_data, 1, true);
+    send_data >>= 1;
+    // Footer
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiHdrSpace);
+    // Data Section #10
+    // e.g. data = 0x0, nbits = 1
+    sendData(kTclXiaomiBitMark, kTclXiaomiOneSpace, kTclXiaomiBitMark, kTclXiaomiZeroSpace, send_data, 1, true);
+    send_data >>= 1;
+    // Footer
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiHdrSpace);
+    // Gap
+    space(kTclXiaomiSpaceGap);
+    // Data Section #11
+    // e.g. data = 0x0, nbits = 1
+    sendData(kTclXiaomiBitMark, kTclXiaomiOneSpace, kTclXiaomiBitMark, kTclXiaomiZeroSpace, send_data, 1, true);
+    send_data >>= 1;
+    // Footer
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiHdrSpace);
+    space(kTclXiaomiHdrSpace);
+    // Data Section #12
+    // e.g. data = 0x0, nbits = 1
+    sendData(kTclXiaomiBitMark, kTclXiaomiOneSpace, kTclXiaomiBitMark, kTclXiaomiZeroSpace, send_data, 1, true);
+    send_data >>= 1;
+    // Footer
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiHdrSpace);
+    // Data Section #13
+    // e.g. data = 0x0, nbits = 1
+    sendData(kTclXiaomiBitMark, kTclXiaomiOneSpace, kTclXiaomiBitMark, kTclXiaomiZeroSpace, send_data, 1, true);
+    send_data >>= 1;
+    // Footer
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiSpaceGap);
+    space(kTclXiaomiHdrSpace);
+    space(kTclXiaomiHdrSpace);
+    // Gap
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiSpaceGap);
+    // Data Section #14
+    // e.g. data = 0x0, nbits = 1
+    sendData(kTclXiaomiBitMark, kTclXiaomiOneSpace, kTclXiaomiBitMark, kTclXiaomiZeroSpace, send_data, 1, true);
+    send_data >>= 1;
+    // Footer
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiSpaceGap);
+    // Data Section #15
+    // e.g. data = 0x0, nbits = 1
+    sendData(kTclXiaomiBitMark, kTclXiaomiOneSpace, kTclXiaomiBitMark, kTclXiaomiZeroSpace, send_data, 1, true);
+    send_data >>= 1;
+    // Footer
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiSpaceGap);
+    space(kTclXiaomiHdrSpace);
+    // Data Section #16
+    // e.g. data = 0x0, nbits = 7
+    sendData(kTclXiaomiBitMark, kTclXiaomiOneSpace, kTclXiaomiBitMark, kTclXiaomiZeroSpace, send_data, 7, true);
+    send_data >>= 7;
+    // Footer
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiHdrSpace);
+    // Data Section #17
+    // e.g. data = 0x0, nbits = 5
+    sendData(kTclXiaomiBitMark, kTclXiaomiOneSpace, kTclXiaomiBitMark, kTclXiaomiZeroSpace, send_data, 5, true);
+    send_data >>= 5;
+    // Footer
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiHdrSpace);
+    space(kTclXiaomiHdrSpace);
+    // Gap
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiSpaceGap);
+    // Gap
+    mark(kTclXiaomiBitMark);
+    space(kTclXiaomiSpaceGap);
+    space(kDefaultMessageGap);  // A 100% made up guess of the gap between messages.
+  }
+}
+#endif  // SEND_TCLXIAOMI
+
+#if DECODE_TCLXIAOMI
+// Function should be safe up to 64 bits.
+/// Decode the supplied TclXiaomi message.
+/// Status: ALPHA / Untested.
+/// @param[in,out] results Ptr to the data to decode & where to store the decode
+/// @param[in] offset The starting index to use when attempting to decode the
+///   raw data. Typically/Defaults to kStartOffset.
+/// @param[in] nbits The number of data bits to expect.
+/// @param[in] strict Flag indicating if we should perform strict matching.
+/// @return A boolean. True if it can decode it, false if it can't.
+bool IRrecv::decodeTclXiaomi(decode_results *results, uint16_t offset, const uint16_t nbits, const bool strict) {
+  if (results->rawlen < 2 * nbits + kTclXiaomiOverhead - offset)
+    return false;  // Too short a message to match.
+  if (strict && nbits != kTclXiaomiBits)
+    return false;
+
+  uint64_t data = 0;
+  match_result_t data_result;
+
+  // Header
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiHdrMark))
+    return false;
+
+  // Data Section #1
+  // e.g. data_result.data = 0x1, nbits = 1
+  data_result = matchData(&(results->rawbuf[offset]), 1,
+                          kTclXiaomiBitMark, kTclXiaomiOneSpace,
+                          kTclXiaomiBitMark, kTclXiaomiZeroSpace);
+  offset += data_result.used;
+  if (data_result.success == false) return false;  // Fail
+  data <<= 1;  // Make room for the new bits of data.
+  data |= data_result.data;
+
+  // Footer
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiSpaceGap))
+    return false;
+
+  // Gap
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiSpaceGap))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+
+  // Gap
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiSpaceGap))
+    return false;
+
+  // Data Section #2
+  // e.g. data_result.data = 0x0, nbits = 1
+  data_result = matchData(&(results->rawbuf[offset]), 1,
+                          kTclXiaomiBitMark, kTclXiaomiOneSpace,
+                          kTclXiaomiBitMark, kTclXiaomiZeroSpace);
+  offset += data_result.used;
+  if (data_result.success == false) return false;  // Fail
+  data <<= 1;  // Make room for the new bits of data.
+  data |= data_result.data;
+
+  // Footer
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+
+  // Gap
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiSpaceGap))
+    return false;
+
+  // Data Section #3
+  // e.g. data_result.data = 0x0, nbits = 1
+  data_result = matchData(&(results->rawbuf[offset]), 1,
+                          kTclXiaomiBitMark, kTclXiaomiOneSpace,
+                          kTclXiaomiBitMark, kTclXiaomiZeroSpace);
+  offset += data_result.used;
+  if (data_result.success == false) return false;  // Fail
+  data <<= 1;  // Make room for the new bits of data.
+  data |= data_result.data;
+
+  // Footer
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+
+  // Gap
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiSpaceGap))
+    return false;
+
+  // Data Section #4
+  // e.g. data_result.data = 0x0, nbits = 1
+  data_result = matchData(&(results->rawbuf[offset]), 1,
+                          kTclXiaomiBitMark, kTclXiaomiOneSpace,
+                          kTclXiaomiBitMark, kTclXiaomiZeroSpace);
+  offset += data_result.used;
+  if (data_result.success == false) return false;  // Fail
+  data <<= 1;  // Make room for the new bits of data.
+  data |= data_result.data;
+
+  // Footer
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+
+  // Data Section #5
+  // e.g. data_result.data = 0x0, nbits = 1
+  data_result = matchData(&(results->rawbuf[offset]), 1,
+                          kTclXiaomiBitMark, kTclXiaomiOneSpace,
+                          kTclXiaomiBitMark, kTclXiaomiZeroSpace);
+  offset += data_result.used;
+  if (data_result.success == false) return false;  // Fail
+  data <<= 1;  // Make room for the new bits of data.
+  data |= data_result.data;
+
+  // Footer
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+
+  // Data Section #6
+  // e.g. data_result.data = 0x0, nbits = 1
+  data_result = matchData(&(results->rawbuf[offset]), 1,
+                          kTclXiaomiBitMark, kTclXiaomiOneSpace,
+                          kTclXiaomiBitMark, kTclXiaomiZeroSpace);
+  offset += data_result.used;
+  if (data_result.success == false) return false;  // Fail
+  data <<= 1;  // Make room for the new bits of data.
+  data |= data_result.data;
+
+  // Footer
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+
+  // Data Section #7
+  // e.g. data_result.data = 0x0, nbits = 1
+  data_result = matchData(&(results->rawbuf[offset]), 1,
+                          kTclXiaomiBitMark, kTclXiaomiOneSpace,
+                          kTclXiaomiBitMark, kTclXiaomiZeroSpace);
+  offset += data_result.used;
+  if (data_result.success == false) return false;  // Fail
+  data <<= 1;  // Make room for the new bits of data.
+  data |= data_result.data;
+
+  // Footer
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+
+  // Data Section #8
+  // e.g. data_result.data = 0x0, nbits = 1
+  data_result = matchData(&(results->rawbuf[offset]), 1,
+                          kTclXiaomiBitMark, kTclXiaomiOneSpace,
+                          kTclXiaomiBitMark, kTclXiaomiZeroSpace);
+  offset += data_result.used;
+  if (data_result.success == false) return false;  // Fail
+  data <<= 1;  // Make room for the new bits of data.
+  data |= data_result.data;
+
+  // Footer
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+
+  // Data Section #9
+  // e.g. data_result.data = 0x0, nbits = 1
+  data_result = matchData(&(results->rawbuf[offset]), 1,
+                          kTclXiaomiBitMark, kTclXiaomiOneSpace,
+                          kTclXiaomiBitMark, kTclXiaomiZeroSpace);
+  offset += data_result.used;
+  if (data_result.success == false) return false;  // Fail
+  data <<= 1;  // Make room for the new bits of data.
+  data |= data_result.data;
+
+  // Footer
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+
+  // Data Section #10
+  // e.g. data_result.data = 0x0, nbits = 1
+  data_result = matchData(&(results->rawbuf[offset]), 1,
+                          kTclXiaomiBitMark, kTclXiaomiOneSpace,
+                          kTclXiaomiBitMark, kTclXiaomiZeroSpace);
+  offset += data_result.used;
+  if (data_result.success == false) return false;  // Fail
+  data <<= 1;  // Make room for the new bits of data.
+  data |= data_result.data;
+
+  // Footer
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+
+  // Gap
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiSpaceGap))
+    return false;
+
+  // Data Section #11
+  // e.g. data_result.data = 0x0, nbits = 1
+  data_result = matchData(&(results->rawbuf[offset]), 1,
+                          kTclXiaomiBitMark, kTclXiaomiOneSpace,
+                          kTclXiaomiBitMark, kTclXiaomiZeroSpace);
+  offset += data_result.used;
+  if (data_result.success == false) return false;  // Fail
+  data <<= 1;  // Make room for the new bits of data.
+  data |= data_result.data;
+
+  // Footer
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+
+  // Data Section #12
+  // e.g. data_result.data = 0x0, nbits = 1
+  data_result = matchData(&(results->rawbuf[offset]), 1,
+                          kTclXiaomiBitMark, kTclXiaomiOneSpace,
+                          kTclXiaomiBitMark, kTclXiaomiZeroSpace);
+  offset += data_result.used;
+  if (data_result.success == false) return false;  // Fail
+  data <<= 1;  // Make room for the new bits of data.
+  data |= data_result.data;
+
+  // Footer
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+
+  // Data Section #13
+  // e.g. data_result.data = 0x0, nbits = 1
+  data_result = matchData(&(results->rawbuf[offset]), 1,
+                          kTclXiaomiBitMark, kTclXiaomiOneSpace,
+                          kTclXiaomiBitMark, kTclXiaomiZeroSpace);
+  offset += data_result.used;
+  if (data_result.success == false) return false;  // Fail
+  data <<= 1;  // Make room for the new bits of data.
+  data |= data_result.data;
+
+  // Footer
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiSpaceGap))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+
+  // Gap
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiSpaceGap))
+    return false;
+
+  // Data Section #14
+  // e.g. data_result.data = 0x0, nbits = 1
+  data_result = matchData(&(results->rawbuf[offset]), 1,
+                          kTclXiaomiBitMark, kTclXiaomiOneSpace,
+                          kTclXiaomiBitMark, kTclXiaomiZeroSpace);
+  offset += data_result.used;
+  if (data_result.success == false) return false;  // Fail
+  data <<= 1;  // Make room for the new bits of data.
+  data |= data_result.data;
+
+  // Footer
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiSpaceGap))
+    return false;
+
+  // Data Section #15
+  // e.g. data_result.data = 0x0, nbits = 1
+  data_result = matchData(&(results->rawbuf[offset]), 1,
+                          kTclXiaomiBitMark, kTclXiaomiOneSpace,
+                          kTclXiaomiBitMark, kTclXiaomiZeroSpace);
+  offset += data_result.used;
+  if (data_result.success == false) return false;  // Fail
+  data <<= 1;  // Make room for the new bits of data.
+  data |= data_result.data;
+
+  // Footer
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiSpaceGap))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+
+  // Data Section #16
+  // e.g. data_result.data = 0x0, nbits = 7
+  data_result = matchData(&(results->rawbuf[offset]), 7,
+                          kTclXiaomiBitMark, kTclXiaomiOneSpace,
+                          kTclXiaomiBitMark, kTclXiaomiZeroSpace);
+  offset += data_result.used;
+  if (data_result.success == false) return false;  // Fail
+  data <<= 7;  // Make room for the new bits of data.
+  data |= data_result.data;
+
+  // Footer
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+
+  // Data Section #17
+  // e.g. data_result.data = 0x0, nbits = 5
+  data_result = matchData(&(results->rawbuf[offset]), 5,
+                          kTclXiaomiBitMark, kTclXiaomiOneSpace,
+                          kTclXiaomiBitMark, kTclXiaomiZeroSpace);
+  offset += data_result.used;
+  if (data_result.success == false) return false;  // Fail
+  data <<= 5;  // Make room for the new bits of data.
+  data |= data_result.data;
+
+  // Footer
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiHdrSpace))
+    return false;
+
+  // Gap
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiSpaceGap))
+    return false;
+
+  // Gap
+  if (!matchMark(results->rawbuf[offset++], kTclXiaomiBitMark))
+    return false;
+  if (!matchSpace(results->rawbuf[offset++], kTclXiaomiSpaceGap))
+    return false;
+
+  // Success
+  results->decode_type = decode_type_t::TCLXIAOMI;
+  results->bits = nbits;
+  results->value = data;
+  results->command = 0;
+  results->address = 0;
+  return true;
+}
+#endif  // DECODE_TCLXIAOMI
 
 /// Class constructor
 /// @param[in] pin GPIO to be used when sending.

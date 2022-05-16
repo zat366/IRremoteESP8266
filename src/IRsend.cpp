@@ -1098,6 +1098,11 @@ bool IRsend::send(const decode_type_t type, const uint64_t data,
       sendZepeal(data, nbits, min_repeat);
       break;
 #endif  // SEND_ZEPEAL
+#if SEND_TCLXIAOMI
+    case TCLXIAOMI:
+      sendTclXiaomi(data, nbits, min_repeat);
+      break;
+#endif  // SEND_WHIRLPOOL_AC
     default:
       return false;
   }

@@ -809,6 +809,11 @@ class IRrecv {
                     const uint16_t nbits = kAirtonBits,
                     const bool strict = true);
 #endif  // DECODE_AIRTON
+#if DECODE_TCLXIAOMI
+  bool decodeAirton(decode_results *results, uint16_t offset = kStartOffset,
+                    const uint16_t nbits = kTclXiaomiBits,
+                    const bool strict = true);
+#endif  // DECODE_TCLXIAOMI
 };
 
 #endif  // IRRECV_H_

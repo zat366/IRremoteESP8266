@@ -1116,6 +1116,10 @@ bool IRrecv::decode(decode_results *results, irparams_t *save,
     return true;
   }
 #endif  // DECODE_HASH
+# if DECODE_TCLXIAOMI
+  DPRINTLN ( "尝试对 TclXiaomi 解码" );
+  if (decodeTclXiaomi(results)) return true;
+# endif   //DECODE_TCLXIAOMI
   // Throw away and start over
   if (!resumed)  // Check if we have already resumed.
     resume();
