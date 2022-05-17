@@ -1106,6 +1106,10 @@ bool IRrecv::decode(decode_results *results, irparams_t *save,
     DPRINTLN("Attempting Daikin 200-bit decode");
     if (decodeDaikin200(results, offset)) return true;
 #endif  // DECODE_DAIKIN200
+# if DECODE_TCLXIAOMI
+  DPRINTLN ( "Attempting TclXiaomi decode" );
+  if (decodeTclXiaomi(results)) return true;
+# endif   //DECODE_TCLXIAOMI
   // Typically new protocols are added above this line.
   }
 #if DECODE_HASH
@@ -1116,10 +1120,6 @@ bool IRrecv::decode(decode_results *results, irparams_t *save,
     return true;
   }
 #endif  // DECODE_HASH
-# if DECODE_TCLXIAOMI
-  DPRINTLN ( "尝试对 TclXiaomi 解码" );
-  if (decodeTclXiaomi(results)) return true;
-# endif   //DECODE_TCLXIAOMI
   // Throw away and start over
   if (!resumed)  // Check if we have already resumed.
     resume();
