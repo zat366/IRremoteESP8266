@@ -773,6 +773,8 @@ uint16_t IRsend::defaultBits(const decode_type_t protocol) {
       return kVoltasBits;
     case WHIRLPOOL_AC:
       return kWhirlpoolAcBits;
+    case TCLXIAOMI:
+      return kTclXiaomiBits;
     case XMP:
       return kXmpBits;
     // No default amount of bits.

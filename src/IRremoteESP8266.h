@@ -1307,7 +1307,7 @@ const uint16_t kBoseBits = 16;
 const uint16_t kRhossStateLength = 12;
 const uint16_t kRhossBits = kRhossStateLength * 8;
 const uint16_t kRhossDefaultRepeat = 0;
-const uint16_t kTclXiaomiBits = 27; 
+const uint16_t kTclXiaomiBits = 37;
 
 
 // Legacy defines. (Deprecated)
